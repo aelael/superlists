@@ -42,7 +42,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows  = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == 'Test Item 1' for row in rows)
+            any(row.text == 'Test Item 1' for row in rows),
+            "New To-Do item did not appear in table"
         )
 
         # User is prompted to enter another To-Do List item
