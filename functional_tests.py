@@ -14,6 +14,12 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         '''tearing down'''
         self.browser.quit()
+
+    def check_for_row_in_list_table(self, row_text):
+        '''checking for a row in the list table'''
+        table = self.browser.find_element_by_id('id_list_table')
+        rows  = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
     
     def test_can_start_a_list_and_retrieve_it_later(self):
         '''test: User can start a list and retrieve it later'''
@@ -38,9 +44,7 @@ class NewVisitorTest(unittest.TestCase):
         # After User presses ENTER key, page reloads with new To-Do List element
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-        table = self.browser.find_element_by_id('id_list_table')
-        rows  = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Test Item 1', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Test Item 1')
 
         # User is prompted to enter another To-Do List item
         # User enters list item "Test Item 2"
@@ -52,11 +56,8 @@ class NewVisitorTest(unittest.TestCase):
         # After page updates, it shows both items in the User list
         table = self.browser.find_element_by_id('id_list_table')
         rows  = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Test Item 1', [row.text for row in rows])
-        self.assertIn(
-            '2: Test Item 2',
-            [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: Test Item 1')
+        self.check_for_row_in_list_table('2: Test Item 2')
 
         # User sees notice that unique URL has been generated for his To-Do List
         self.fail('Test end!')
