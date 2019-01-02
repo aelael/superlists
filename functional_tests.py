@@ -1,4 +1,7 @@
-from selenium import webdriver
+from selenium                       import webdriver
+from selenium.webdriver.common.keys import Keys
+
+import time
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -19,13 +22,32 @@ class NewVisitorTest(unittest.TestCase):
 
         # User sees 'To-Do List' in webpage title
         self.assertIn('To-Do List', self.browser.title)
-        self.fail('Ending test!')
-
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do List', header_text)
+        
         # User is prompted to enter a To-Do List item
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            'Enter To-Do List item'
+        )
+
         # User enters list item "Test Item 1"
+        inputbox.send_keys('Test Item 1')
+        
+        # After User presses ENTER key, page reloads with new To-Do List element
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows  = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == 'Test Item 1' for row in rows)
+        )
 
         # User is prompted to enter another To-Do List item
         # User enters list item "Test Item 2"
+        self.fail('Ending test!')
 
         # After page updates, it shows both items in the User list
         # User sees notice that unique URL has been generated for his To-Do List
