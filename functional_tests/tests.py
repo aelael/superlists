@@ -1,10 +1,11 @@
+from django.test                    import LiveServerTestCase
+
 from selenium                       import webdriver
 from selenium.webdriver.common.keys import Keys
 
 import time
-import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     '''new User test'''
 
     def setUp(self):
@@ -24,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         '''test: User can start a list and retrieve it later'''
         # User loads To-Do List homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # User sees 'To-Do List' in webpage title
         self.assertIn('To-Do List', self.browser.title)
@@ -62,6 +63,3 @@ class NewVisitorTest(unittest.TestCase):
         # User sees notice that unique URL has been generated for his To-Do List
         self.fail('Test end!')
         # User follows the link and checks his To-Do List
-
-if __name__ == '__main__':
-    unittest.main(warnings = 'ignore')
